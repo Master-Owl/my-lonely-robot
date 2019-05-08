@@ -64,7 +64,7 @@ public class AIController : AbstractCharacterController {
 
   void DoAction() {
     float input = 0;
-    bool decelerating = shouldDecelerate && (accelerationTimer > currentMoveset.duration - ACCEL_TIME);
+    bool decelerating = shouldDecelerate && (accelerationTimer > currentMoveset.duration - ACCEL_TIME) && accelerationTimer >= ACCEL_TIME;
 
     switch (currentMoveset.move) {
       case Move.Right:
