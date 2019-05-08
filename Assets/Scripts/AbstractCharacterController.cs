@@ -11,7 +11,7 @@ public abstract class AbstractCharacterController : MonoBehaviour {
       float distToGround = boxCollider.bounds.extents.y;
       float halfWidth = boxCollider.bounds.extents.x;
       Vector2 origin = new Vector2(transform.position.x, transform.position.y - distToGround - .01f);
-      LayerMask floor = LayerMask.GetMask("Floor", "Character");
+      LayerMask floor = LayerMask.GetMask("Floor", "Character", "PlayerGoal", "RobotGoal");
 
       // Middle of base is touching floor
       if (Physics2D.Raycast(origin, -Vector2.up, 0.1f, floor)) return true;
