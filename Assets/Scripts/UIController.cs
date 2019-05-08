@@ -26,6 +26,10 @@ public class UIController : MonoBehaviour {
 
     IEnumerator TitleTextTimer(float duration) {
         yield return new WaitForSeconds(duration);
+        HideTitleText();
+    }
+
+    public void HideTitleText() {
         titleText.gameObject.SetActive(false);
     }
 }

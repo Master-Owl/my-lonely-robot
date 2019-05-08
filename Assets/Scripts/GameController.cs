@@ -47,6 +47,7 @@ public class GameController : MonoBehaviour {
   }
 
   public void Reset() {
+    uiController.HideTitleText();
     playerInControl = true;
 
     player.transform.position = playerSpawn.position;
