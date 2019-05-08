@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour {
-  public GameObject player;
-  public GameObject robot;
-  public Vector2 spawnPoint;
+  public GameObject playerPrefab;
+  public GameObject robotPrefab;
+  public Transform playerSpawn;
+  public Transform robotSpawn;
 
+  // Instances
+  GameObject player;
+  GameObject robot;
 
   public bool playerInControl { get; private set; }
   PlayerController pCtrl;
@@ -15,23 +19,49 @@ public class GameController : MonoBehaviour {
 
   void Start() {
     moveset = new List<Moveset>();
+  }
+
+  public void Spawn() {
+    DestroyCharacters();
+
+    player = Instantiate(playerPrefab, playerSpawn.position, playerSpawn.rotation);
+    robot = Instantiate(robotPrefab, robotSpawn.position, robotSpawn.rotation);
+
     pCtrl = player.GetComponent<PlayerController>();
     rCtrl = robot.GetComponent<AIController>();
-    Reset();
+
+    player.name = "Player";
+    robot.name = "Robot";
+    pCtrl.gameController = rCtrl.gameController = this;
+
+    playerInControl = true;
   }
 
   public void Reset() {
-    if (spawnPoint == null) spawnPoint = Vector2.zero;
-    
     playerInControl = true;
-    player.transform.position.Set(spawnPoint.x, spawnPoint.y + 0.5f, 0);
-    robot.transform.position.Set(spawnPoint.x - (player.GetComponent<BoxCollider2D>().size.x + 0.5f), spawnPoint.y + 0.5f, 0);
+    
+    player.transform.position = playerSpawn.position;
+    player.transform.rotation = playerSpawn.rotation;
+    robot.transform.position = robotSpawn.position;
+    robot.transform.rotation = robotSpawn.rotation;    
 
     rCtrl.speed = pCtrl.speed;
     rCtrl.jumpHeight = pCtrl.jumpHeight;
     rCtrl.jumpRechargeTime = pCtrl.jumpRechargeTime;
 
+    Vector3 scale = player.transform.localScale;
+    Quaternion rotation = player.transform.rotation;
+    robot.transform.localScale.Set(scale.x, scale.y, scale.z);
+    robot.transform.rotation.Set(rotation.x, rotation.y, rotation.z, rotation.w);
+
     moveset.Clear();
+  }
+
+  public void DestroyCharacters() {
+    if (player != null) Destroy(player);
+    if (robot != null) Destroy(robot);
+    player = null;
+    robot = null;
   }
 
   public void AddMovesetItem(Moveset item) {
@@ -41,7 +71,7 @@ public class GameController : MonoBehaviour {
     moveset.Add(item);
   }
 
-  public void SwapControl() { 
+  public void SwapControl() {
     playerInControl = !playerInControl;
 
     if (!playerInControl) {
