@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1590911685205996120}
   m_Layer: 8
   m_Name: RobotSpawn
-  m_TagString: Untagged
+  m_TagString: RobotSpawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -1,35 +1,59 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
   public UIController uiController;
-
   public GameObject playerPrefab;
   public GameObject robotPrefab;
 
-  public Transform playerSpawn;
-  public Transform playerGoal;
-  public Transform robotSpawn;
-  public Transform robotGoal;
-
   // Instances
+  Transform playerSpawn;
+  Transform playerGoal;
+  Transform robotSpawn;
+  Transform robotGoal;
   GameObject player;
   GameObject robot;
-
-  public bool playerInControl { get; private set; }
   PlayerController pCtrl;
   AIController rCtrl;
+
+  public bool playerInControl { get; private set; }
   List<Moveset> moveset;
 
   void Start() {
     moveset = new List<Moveset>();
-    Spawn();
+    DontDestroyOnLoad(this);
+    DontDestroyOnLoad(uiController);
   }
 
-  public void Spawn() {
+  void OnEnable() {
+    SceneManager.sceneLoaded += OnSceneLoaded;
+  }
+
+  void OnDisable() {
+    SceneManager.sceneLoaded -= OnSceneLoaded;
+  }
+
+  void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+    Debug.Log("Scene Loaded: " + scene.name);
     DestroyCharacters();
+    if (scene.buildIndex == 0)       
+      return;
+    LevelStart();
+  }
+
+  public void LevelStart() {
+    try {
+      playerSpawn = GameObject.FindWithTag("PlayerSpawn").transform;
+      playerGoal = GameObject.FindWithTag("PlayerGoal").transform;
+      robotSpawn = GameObject.FindWithTag("RobotSpawn").transform;
+      robotGoal = GameObject.FindWithTag("RobotGoal").transform;
+    } catch (UnityException e) {
+      Debug.LogError(e.Message);
+      return;
+    }
 
     player = Instantiate(playerPrefab, playerSpawn.position, playerSpawn.rotation);
     robot = Instantiate(robotPrefab, robotSpawn.position, robotSpawn.rotation);
@@ -40,6 +64,15 @@ public class GameController : MonoBehaviour {
     player.name = "Player";
     robot.name = "Robot";
     pCtrl.gameController = rCtrl.gameController = this;
+
+    rCtrl.speed = pCtrl.speed;
+    rCtrl.jumpHeight = pCtrl.jumpHeight;
+    rCtrl.jumpRechargeTime = pCtrl.jumpRechargeTime;
+
+    Vector3 scale = player.transform.localScale;
+    Quaternion rotation = player.transform.rotation;
+    robot.transform.localScale.Set(scale.x, scale.y, scale.z);
+    robot.transform.rotation.Set(rotation.x, rotation.y, rotation.z, rotation.w);
 
     playerInControl = true;
 
@@ -54,15 +87,6 @@ public class GameController : MonoBehaviour {
     player.transform.rotation = playerSpawn.rotation;
     robot.transform.position = robotSpawn.position;
     robot.transform.rotation = robotSpawn.rotation;
-
-    rCtrl.speed = pCtrl.speed;
-    rCtrl.jumpHeight = pCtrl.jumpHeight;
-    rCtrl.jumpRechargeTime = pCtrl.jumpRechargeTime;
-
-    Vector3 scale = player.transform.localScale;
-    Quaternion rotation = player.transform.rotation;
-    robot.transform.localScale.Set(scale.x, scale.y, scale.z);
-    robot.transform.rotation.Set(rotation.x, rotation.y, rotation.z, rotation.w);
 
     moveset.Clear();
   }
@@ -109,7 +133,7 @@ public class GameController : MonoBehaviour {
 
     // Middle of base is touching goal
     if (Physics2D.Raycast(pOrigin, -Vector2.up, 0.1f, pGoal) &&
-        Physics2D.Raycast(rOrigin, -Vector2.up, 0.1f, rGoal)) {
+      Physics2D.Raycast(rOrigin, -Vector2.up, 0.1f, rGoal)) {
       uiController.DisplayTitleText("Level Complete!");
     }
   }
