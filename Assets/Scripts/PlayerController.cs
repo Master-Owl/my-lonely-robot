@@ -58,7 +58,7 @@ public class PlayerController : AbstractCharacterController {
       ChangeCurrentMove(action);
     }
 
-    if (Input.GetButtonDown("ReleaseControl")) {
+    if (Input.GetButton("ReleaseControl")) {
       gameController.SwapControl();
     }
   }
