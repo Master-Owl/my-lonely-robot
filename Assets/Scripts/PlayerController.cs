@@ -13,11 +13,13 @@ public class PlayerController : AbstractCharacterController {
 
   Move currentMove;
   float timerCounter;
+  List<float> inputValues;
 
   void Start() {
     base.InitCharacter();
+    inputValues  = new List<float>();
+    currentMove  = Move.Nothing;
     timerCounter = 0;
-    currentMove = Move.Nothing;    
   }
 
   void FixedUpdate() {
@@ -28,6 +30,8 @@ public class PlayerController : AbstractCharacterController {
     bool ducking = Input.GetAxis("Vertical") > 0;
     bool jump = Input.GetButton("Jump");
 
+    inputValues.Add(input);
+
     if (ducking) {
       action = Move.Duck;
     } else if (input != 0) {
@@ -37,9 +41,9 @@ public class PlayerController : AbstractCharacterController {
 
     if (jump) {
       action = action == Move.Right ? Move.JumpRight :
-               action == Move.Left  ? Move.JumpLeft  :
-               action == Move.Duck  ? Move.JumpDuck  :
-               Move.Jump;      
+        action == Move.Left ? Move.JumpLeft :
+        action == Move.Duck ? Move.JumpDuck :
+        Move.Jump;
     }
 
     if (jump && canJump) {
@@ -52,7 +56,7 @@ public class PlayerController : AbstractCharacterController {
 
     if (action != currentMove) {
       ChangeCurrentMove(action);
-    }    
+    }
 
     if (Input.GetButtonDown("ReleaseControl")) {
       gameController.SwapControl();
@@ -60,13 +64,11 @@ public class PlayerController : AbstractCharacterController {
   }
 
   void ChangeCurrentMove(Move newMove) {
-    gameController.AddMovesetItem(new Moveset {
-      duration = timerCounter,
-      move = currentMove
-    });
+    gameController.AddMovesetItem(new Moveset(currentMove, timerCounter, inputValues));
 
     currentMove = newMove;
     timerCounter = 0;
+    inputValues.Clear();
   }
 
   void UpdateTimer() {

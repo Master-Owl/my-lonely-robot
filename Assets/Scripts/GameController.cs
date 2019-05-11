@@ -119,7 +119,7 @@ public class GameController : MonoBehaviour {
         moveset.RemoveAt(moveset.Count - 1);
       }
 
-      rCtrl.SetMoveset(moveset);
+      rCtrl.SetMovesetList(moveset);
       moveset.Clear();
     }
 
