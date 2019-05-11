@@ -7,18 +7,24 @@ public class UIController : MonoBehaviour {
   public GameController gameController;
   public Canvas canvasOverlay;
   public Text titleText;
+  public Button resetButton;
+  public Button nextLevelButton;
 
-  void Start() {
+
+  void Start() {    
+    resetButton.onClick.AddListener(OnResetPressed);
+    nextLevelButton.onClick.AddListener(OnNextLevelPressed);
+
     DontDestroyOnLoad(canvasOverlay);
   }
 
-  public void OnStartPressed() {
-    gameController.LevelStart();
-  }
-
-  public void OnResetPressed() {
+  void OnResetPressed() {
     gameController.Reset();
   }
+
+  void OnNextLevelPressed() {
+    gameController.LoadNextLevel();
+  } 
 
   public void DisplayTitleText(string text, float duration = 0) {
     titleText.text = text;
@@ -36,5 +42,13 @@ public class UIController : MonoBehaviour {
 
   public void HideTitleText() {
     titleText.gameObject.SetActive(false);
+  }
+
+  public void DisplayResetButton(bool visible = true) {
+    resetButton.gameObject.SetActive(visible);
+  }
+
+  public void DisplayNextLevelButton(bool visible = true) {
+    nextLevelButton.gameObject.SetActive(visible);
   }
 }

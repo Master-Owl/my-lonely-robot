@@ -19,6 +19,8 @@ public class GameController : MonoBehaviour {
   PlayerController pCtrl;
   AIController rCtrl;
 
+  int curScene;
+
   public bool playerInControl { get; private set; }
   List<Moveset> moveset;
 
@@ -39,7 +41,8 @@ public class GameController : MonoBehaviour {
   void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
     Debug.Log("Scene Loaded: " + scene.name);
     DestroyCharacters();
-    if (scene.buildIndex == 0)       
+    curScene = scene.buildIndex;
+    if (curScene == 0)       
       return;
     LevelStart();
   }
@@ -77,6 +80,8 @@ public class GameController : MonoBehaviour {
     playerInControl = true;
 
     uiController.DisplayTitleText("Begin Level", 3.5f);
+    uiController.DisplayResetButton();
+    uiController.DisplayNextLevelButton(false);
   }
 
   public void Reset() {
@@ -123,6 +128,10 @@ public class GameController : MonoBehaviour {
       CheckForLevelComplete();
   }
 
+  public void LoadNextLevel() {
+    SceneManager.LoadScene(curScene + 1);
+  }
+
   void CheckForLevelComplete() {
     float pDistToGround = player.GetComponent<BoxCollider2D>().bounds.extents.y;
     float rDistToGround = robot.GetComponent<BoxCollider2D>().bounds.extents.y;
@@ -134,7 +143,13 @@ public class GameController : MonoBehaviour {
     // Middle of base is touching goal
     if (Physics2D.Raycast(pOrigin, -Vector2.up, 0.1f, pGoal) &&
       Physics2D.Raycast(rOrigin, -Vector2.up, 0.1f, rGoal)) {
-      uiController.DisplayTitleText("Level Complete!");
+      
+      if (curScene+1 <= SceneManager.sceneCountInBuildSettings) {
+        uiController.DisplayTitleText("Level Complete!");
+        uiController.DisplayNextLevelButton();
+      } else {
+        uiController.DisplayTitleText("Congrats on Finishing The Game!");
+      }
     }
   }
 }
