@@ -7,13 +7,15 @@ public class UIController : MonoBehaviour {
   public GameController gameController;
   public Canvas canvasOverlay;
   public Text titleText;
+
   public Button resetButton;
   public Button nextLevelButton;
-
+  public Button callRobotButton;
 
   void Start() {    
     resetButton.onClick.AddListener(OnResetPressed);
     nextLevelButton.onClick.AddListener(OnNextLevelPressed);
+    callRobotButton.onClick.AddListener(OnCallRobotPressed);
 
     DontDestroyOnLoad(canvasOverlay);
   }
@@ -25,6 +27,11 @@ public class UIController : MonoBehaviour {
   void OnNextLevelPressed() {
     gameController.LoadNextLevel();
   } 
+
+  void OnCallRobotPressed() {
+    if (gameController.playerInControl)
+      gameController.SwapControl();
+  }
 
   public void DisplayTitleText(string text, float duration = 0) {
     titleText.text = text;
@@ -44,8 +51,9 @@ public class UIController : MonoBehaviour {
     titleText.gameObject.SetActive(false);
   }
 
-  public void DisplayResetButton(bool visible = true) {
+  public void DisplayLevelButtons(bool visible = true) {
     resetButton.gameObject.SetActive(visible);
+    callRobotButton.gameObject.SetActive(visible);
   }
 
   public void DisplayNextLevelButton(bool visible = true) {

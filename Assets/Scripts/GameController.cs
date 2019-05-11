@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour {
     playerInControl = true;
 
     uiController.DisplayTitleText("Begin Level", 3.5f);
-    uiController.DisplayResetButton();
+    uiController.DisplayLevelButtons();
     uiController.DisplayNextLevelButton(false);
   }
 
@@ -144,7 +144,7 @@ public class GameController : MonoBehaviour {
     if (Physics2D.Raycast(pOrigin, -Vector2.up, 0.1f, pGoal) &&
       Physics2D.Raycast(rOrigin, -Vector2.up, 0.1f, rGoal)) {
       
-      if (curScene+1 <= SceneManager.sceneCountInBuildSettings) {
+      if (curScene <= SceneManager.sceneCountInBuildSettings) {
         uiController.DisplayTitleText("Level Complete!");
         uiController.DisplayNextLevelButton();
       } else {
