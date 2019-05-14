@@ -31,18 +31,19 @@ public class StartScreenController : MonoBehaviour {
   }
 
   void SpawnLevelButtons() {
-    // # of scenes minus 1 for start screen
-    int levelCount = SceneManager.sceneCountInBuildSettings - 1;
+    // # of scenes minus 2 for start screen and base scene
+    int levelCount = SceneManager.sceneCountInBuildSettings - 2;
     GameObject panel = GameObject.FindWithTag("UIPanel");
 
     for (int i = 1; i <= levelCount; ++i) {
-      int lvl = i; // Necessary b/c lambda function doesn't keep static scope of loop var  
+      int lvl = i+1;
       GameObject buttonGO = Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity);
       buttonGO.transform.SetParent(panel.transform);
       buttonGO.transform.localScale = Vector3.one;
-      buttonGO.GetComponentInChildren<Text>().text = lvl.ToString();
+      buttonGO.GetComponentInChildren<Text>().text = i.ToString();
       buttonGO.GetComponent<Button>().onClick.AddListener(() => {
-        SceneManager.LoadScene(lvl);
+        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(lvl, LoadSceneMode.Additive);
       });
       levelButtonsLoaded++;
     };   

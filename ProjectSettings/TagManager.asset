@@ -12,6 +12,7 @@ TagManager:
   - PlayerGoal
   - RobotGoal
   - Despawn
+  - TutorialController
   layers:
   - Default
   - TransparentFX
@@ -60,4 +61,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3244634815
+    locked: 0
+  - name: UI
+    uniqueID: 2508601741
     locked: 0

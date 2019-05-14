@@ -5,19 +5,16 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour {
   public GameController gameController;
-  public Canvas canvasOverlay;
   public Text titleText;
+  public GameObject titleTextBackground;
 
   public Button resetButton;
+  public Button settingsButton;
   public Button nextLevelButton;
-  public Button callRobotButton;
 
-  void Start() {    
+  void Start() {
     resetButton.onClick.AddListener(OnResetPressed);
     nextLevelButton.onClick.AddListener(OnNextLevelPressed);
-    callRobotButton.onClick.AddListener(OnCallRobotPressed);
-
-    DontDestroyOnLoad(canvasOverlay);
   }
 
   void OnResetPressed() {
@@ -26,7 +23,7 @@ public class UIController : MonoBehaviour {
 
   void OnNextLevelPressed() {
     gameController.LoadNextLevel();
-  } 
+  }
 
   void OnCallRobotPressed() {
     if (gameController.playerInControl)
@@ -36,6 +33,7 @@ public class UIController : MonoBehaviour {
   public void DisplayTitleText(string text, float duration = 0) {
     titleText.text = text;
     titleText.gameObject.SetActive(true);
+    titleTextBackground.SetActive(true);
 
     if (duration > 0) {
       StartCoroutine(TitleTextTimer(duration));
@@ -49,11 +47,7 @@ public class UIController : MonoBehaviour {
 
   public void HideTitleText() {
     titleText.gameObject.SetActive(false);
-  }
-
-  public void DisplayLevelButtons(bool visible = true) {
-    resetButton.gameObject.SetActive(visible);
-    callRobotButton.gameObject.SetActive(visible);
+    titleTextBackground.SetActive(false);
   }
 
   public void DisplayNextLevelButton(bool visible = true) {
