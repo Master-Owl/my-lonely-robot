@@ -46,6 +46,10 @@ public class GameController : MonoBehaviour {
     LevelStart();
   }
 
+  void Update() {
+    CheckForLevelComplete();
+  }
+
   public void LevelStart() {
     try {
       playerSpawn = GameObject.FindWithTag("PlayerSpawn").transform;
@@ -122,8 +126,8 @@ public class GameController : MonoBehaviour {
     }
 
     // Check for level complete after robot finishes movement
-    if (playerInControl)
-      CheckForLevelComplete();
+    // if (playerInControl)
+    //   CheckForLevelComplete();
   }
 
   public void LoadNextLevel() {

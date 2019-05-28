@@ -8,7 +8,7 @@ public class MovingPlatformController : MonoBehaviour {
   
   // Platform will start at left or bottom respectively
   public MovingPlatformDirection movementDirection = MovingPlatformDirection.Horizontal;
-  public bool canEnterFromBelow = false;
+  public bool active = true;
 
   [Range(0,20)]
   public float range = 3;
@@ -31,6 +31,8 @@ public class MovingPlatformController : MonoBehaviour {
   }
 
   void Update() {
+    if (!active) return;
+    
     transform.Translate(direction.x * Time.deltaTime * speed, direction.y * Time.deltaTime * speed, 0);
 
     if (transform.position.x >= endingPos.x && transform.position.y >= endingPos.y) {
