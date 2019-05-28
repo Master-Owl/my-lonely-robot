@@ -27,6 +27,10 @@ public class AIController : AbstractCharacterController {
     currentMoveset = new Moveset(Move.Nothing, 0, null);
   }
 
+  void Update() {
+    UpdateParent();
+  }
+
   void FixedUpdate() {
     if (!isActive) return;
 

@@ -22,6 +22,10 @@ public class PlayerController : AbstractCharacterController {
     timerCounter = 0;
   }
 
+  void Update() {
+    UpdateParent();
+  }
+
   void FixedUpdate() {
     if (!isActive) return;
 
