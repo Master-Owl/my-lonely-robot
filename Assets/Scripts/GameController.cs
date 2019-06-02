@@ -47,7 +47,7 @@ public class GameController : MonoBehaviour {
   }
 
   void Update() {
-    CheckForLevelComplete();
+    // CheckForLevelComplete();
   }
 
   public void LevelStart() {
@@ -126,8 +126,8 @@ public class GameController : MonoBehaviour {
     }
 
     // Check for level complete after robot finishes movement
-    // if (playerInControl)
-    //   CheckForLevelComplete();
+    if (playerInControl)
+      CheckForLevelComplete();
   }
 
   public void LoadNextLevel() {
