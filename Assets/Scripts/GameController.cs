@@ -46,6 +46,10 @@ public class GameController : MonoBehaviour {
     LevelStart();
   }
 
+  void Update() {
+    // CheckForLevelComplete();
+  }
+
   public void LevelStart() {
     try {
       playerSpawn = GameObject.FindWithTag("PlayerSpawn").transform;

@@ -28,6 +28,10 @@ public class AIController : AbstractCharacterController {
     currentMoveset = new Moveset(Move.Nothing, 0, null);
   }
 
+  void Update() {
+    UpdateParent();
+  }
+
   void FixedUpdate() {
     if (canJump && !rechargingJump) {
       animator.SetBool("Jumping", false);
