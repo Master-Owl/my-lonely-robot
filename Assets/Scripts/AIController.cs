@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(BoxCollider2D)), RequireComponent(typeof(Animator))]
 public class AIController : AbstractCharacterController {
 
   [SerializeField] List<Moveset> movesetList;
@@ -10,6 +10,7 @@ public class AIController : AbstractCharacterController {
   int currentInputIndex;
   bool doneWithPrevMove;
   Moveset currentMoveset;
+  Animator animator;
 
   bool isActive {
     get {
@@ -17,9 +18,9 @@ public class AIController : AbstractCharacterController {
     }
   }
 
-
   void Start() {
     base.InitCharacter();
+    animator = GetComponent<Animator>();
     doneWithPrevMove = true;
     currentMoveIdx = 0;
     currentInputIndex = 0;
@@ -28,7 +29,14 @@ public class AIController : AbstractCharacterController {
   }
 
   void FixedUpdate() {
-    if (!isActive) return;
+    if (canJump && !rechargingJump) {
+      animator.SetBool("Jumping", false);
+    }
+    if (!isActive) {
+      if (animator.GetBool("Moving"))
+        animator.SetBool("Moving", false);
+      return;
+    }
 
     if (doneWithPrevMove) {
       if (CheckIfFinished()) return;
@@ -60,10 +68,14 @@ public class AIController : AbstractCharacterController {
 
   void DoAction() {
     float input = currentMoveset.inputValues[Mathf.Min(currentInputIndex++, currentMoveset.inputValues.Count - 1)];
+    
+    if (input < 0) GetComponent<SpriteRenderer>().flipX = true;
+    else GetComponent<SpriteRenderer>().flipX = false;
 
     switch (currentMoveset.move) {
       case Move.Right:
       case Move.Left:
+        animator.SetBool("Moving", true);
         transform.Translate(speed * input * Time.deltaTime, 0, 0);
         break;
 
@@ -77,6 +89,7 @@ public class AIController : AbstractCharacterController {
 
       case Move.JumpRight:
       case Move.JumpLeft:
+        animator.SetBool("Moving", true);
         transform.Translate(speed * input * Time.deltaTime, 0, 0);
         TryJump();
         break;
@@ -98,9 +111,11 @@ public class AIController : AbstractCharacterController {
 
   void TryJump() {
     if (canJump) {
-      rb.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
-      if (!rechargingJump)
+      rb.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);      
+      if (!rechargingJump) {
+        animator.SetBool("Jumping", true);
         StartCoroutine(RechargeJump());
+      }
     }
   }
 
